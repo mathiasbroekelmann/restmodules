@@ -6,6 +6,6 @@ package org.restmodules.filter;
  * @since 13.01.2010
  *
  */
-interface Provider<T> {
+public interface Provider<T> {
     T get();
 }

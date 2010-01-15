@@ -14,35 +14,28 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import com.sun.jersey.core.spi.component.ioc.IoCComponentProviderFactory;
-
 /**
  * @author Mathias Broekelmann
  *
  * @since 13.01.2010
  *
  */
-public class FilterRegistryImpl implements FilterRegistry {
-
-    private final IoCComponentProviderFactory _providerFactory;
-
-    public FilterRegistryImpl(final IoCComponentProviderFactory providerFactory) {
-        _providerFactory = providerFactory;
-    }
-
-    public FilterRegistryImpl() {
-        this(null);
-    }
+public class DefaultFilterRegistry implements FilterRegistry {
 
     private final Collection<ServletFilter> _filters = new CopyOnWriteArrayList<ServletFilter>();
+
+    protected Provider<Filter> createFilterProvider(final Class<Filter> filterClazz) {
+        return new ProviderImplementation(filterClazz);
+    }
 
     public FilterBuilder filter(final String urlPattern, final String... moreUrlPatterns) {
         if (urlPattern == null) {
             throw new IllegalArgumentException("urlPattern must not be null.");
         }
         return new FilterBuilder() {
+
             public void through(final javax.servlet.Filter filter) {
-                through(filter, Collections.<String, String> emptyMap());
+                through(filter, Collections.<String, String>emptyMap());
             }
 
             public void through(final Filter filter, final Map<String, String> initParams) {
@@ -53,6 +46,7 @@ public class FilterRegistryImpl implements FilterRegistry {
                     throw new IllegalArgumentException("Init params must not be null");
                 }
                 _filters.add(new ServletFilterWrapper(urlPattern, initParams, new Provider<Filter>() {
+
                     public Filter get() {
                         return filter;
                     }
@@ -60,7 +54,7 @@ public class FilterRegistryImpl implements FilterRegistry {
             }
 
             public void through(final Class<Filter> filterClazz) {
-                through(filterClazz, Collections.<String, String> emptyMap());
+                through(filterClazz, Collections.<String, String>emptyMap());
             }
 
             public void through(final Class<Filter> filterClazz, final Map<String, String> initParams) {
@@ -71,9 +65,8 @@ public class FilterRegistryImpl implements FilterRegistry {
                     throw new IllegalArgumentException("Init params must not be null");
                 }
                 _filters.add(new ServletFilterWrapper(urlPattern,
-                                                      initParams,
-                                                      new ProviderImplementation(filterClazz),
-                                                      moreUrlPatterns));
+                        initParams, createFilterProvider(filterClazz),
+                        moreUrlPatterns));
             }
         };
     }
@@ -94,7 +87,7 @@ public class FilterRegistryImpl implements FilterRegistry {
             private ServletConfig _config;
 
             public void service(final ServletRequest request, final ServletResponse response) throws ServletException,
-                IOException {
+                    IOException {
                 new ServletFilterChainImplementation(servlet).doFilter(request, response);
             }
 
@@ -124,6 +117,7 @@ public class FilterRegistryImpl implements FilterRegistry {
     }
 
     private final class ServletFilterChainImplementation implements ServletFilterChain {
+
         private final Servlet _servlet;
         private final Iterator<ServletFilter> _remainingFilters = _filters.iterator();
 
@@ -132,7 +126,7 @@ public class FilterRegistryImpl implements FilterRegistry {
         }
 
         public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException,
-            ServletException {
+                ServletException {
             if (_remainingFilters.hasNext()) {
                 _remainingFilters.next().doFilter(request, response, this);
             } else {
@@ -142,6 +136,7 @@ public class FilterRegistryImpl implements FilterRegistry {
     }
 
     private final class ProviderImplementation implements Provider<Filter> {
+
         private final Class<Filter> _filterClazz;
 
         private ProviderImplementation(final Class<Filter> filterClazz) {
@@ -150,16 +145,12 @@ public class FilterRegistryImpl implements FilterRegistry {
 
         public Filter get() {
             final Filter filter;
-            if (_providerFactory != null) {
-                filter = (Filter) _providerFactory.getComponentProvider(_filterClazz).getInstance();
-            } else {
-                try {
-                    filter = _filterClazz.newInstance();
-                } catch (final InstantiationException e) {
-                    throw new RuntimeException("Could not instantiate filter instance for " + _filterClazz, e);
-                } catch (final IllegalAccessException e) {
-                    throw new RuntimeException("Could not instantiate filter instance for " + _filterClazz, e);
-                }
+            try {
+                filter = _filterClazz.newInstance();
+            } catch (final InstantiationException e) {
+                throw new RuntimeException("Could not instantiate filter instance for " + _filterClazz, e);
+            } catch (final IllegalAccessException e) {
+                throw new RuntimeException("Could not instantiate filter instance for " + _filterClazz, e);
             }
             return filter;
         }

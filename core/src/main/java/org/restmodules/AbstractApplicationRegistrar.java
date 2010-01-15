@@ -12,6 +12,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
+import org.restmodules.filter.DefaultFilterRegistry;
 
 /**
  * Abstract base class for {@link ApplicationRegistrar} implementations.
@@ -48,7 +49,7 @@ public abstract class AbstractApplicationRegistrar implements ApplicationRegistr
     public final Runnable registerAt(final HttpService httpService) {
         final HttpContext context = httpContext();
         final String alias = validAlias(alias());
-        final Servlet servlet = servlet();
+        final Servlet servlet = filtered(servlet());
         final Dictionary initParams = servletInitParams();
         try {
             httpService.registerServlet(alias, servlet, initParams, context);
@@ -73,6 +74,10 @@ public abstract class AbstractApplicationRegistrar implements ApplicationRegistr
                 }
             }
         };
+    }
+
+    protected DefaultFilterRegistry filterRegistry() {
+        return new DefaultFilterRegistry();
     }
 
     private String validAlias(final String alias) {
@@ -118,6 +123,20 @@ public abstract class AbstractApplicationRegistrar implements ApplicationRegistr
             basePath = "/";
         }
         return basePath;
+    }
+
+    protected Servlet filtered(Servlet servlet) {
+        final Servlet filteredServlet;
+        Application app = getApplication();
+        if(app instanceof RestmodulesApplication) {
+            RestmodulesApplication restModulesApp = (RestmodulesApplication) app;
+            DefaultFilterRegistry registry = filterRegistry();
+            restModulesApp.registerFilters(registry);
+            filteredServlet = registry.filterServlet(servlet);
+        } else {
+            filteredServlet = servlet;
+        }
+        return filteredServlet;
     }
 
 }
