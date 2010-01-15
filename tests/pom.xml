@@ -24,36 +24,33 @@
         <dependency>
             <groupId>com.sun.jersey.osgi</groupId>
             <artifactId>jsr311-api</artifactId>
-            <version>${jersey.version}</version>
+            <version>1.1.5-ea-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.restmodules</groupId>
             <artifactId>restmodules-core</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.restmodules</groupId>
+            <artifactId>restmodules-jersey</artifactId>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey.osgi</groupId>
             <artifactId>jersey-core</artifactId>
-            <version>${jersey.version}</version>
-            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jersey.osgi</groupId>
+            <artifactId>jersey-server</artifactId>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
-            <version>4.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.web</groupId>
             <artifactId>pax-web-jetty-bundle</artifactId>
             <version>0.7.2</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.jersey.osgi</groupId>
-            <artifactId>jersey-server</artifactId>
-            <version>${jersey.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -77,20 +74,16 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.7</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
-            <version>2.3</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>1.4</version>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 

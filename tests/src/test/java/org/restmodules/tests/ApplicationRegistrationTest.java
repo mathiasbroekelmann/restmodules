@@ -63,12 +63,13 @@ public class ApplicationRegistrationTest {
 
     @Configuration
     public static Option[] configuration() {
-        return options(provision(mavenBundle().groupId("org.restmodules").artifactId("restmodules-core").
-                versionAsInProject()),
-                provision(mavenBundle().groupId("com.sun.jersey.osgi").artifactId("jersey-core").versionAsInProject()),
-                provision(mavenBundle().groupId("com.sun.jersey.osgi").artifactId("jersey-server").versionAsInProject()),
-                provision(mavenBundle().groupId("com.sun.jersey.osgi").artifactId("jsr311-api").versionAsInProject()),
-                provision(mavenBundle().groupId("commons-io").artifactId("commons-io").versionAsInProject()),
+        return options(provision(
+                mavenBundle().groupId("org.restmodules").artifactId("restmodules-core").versionAsInProject(),
+                mavenBundle().groupId("org.restmodules").artifactId("restmodules-jersey").versionAsInProject(),
+                mavenBundle().groupId("com.sun.jersey.osgi").artifactId("jersey-core").versionAsInProject(),
+                mavenBundle().groupId("com.sun.jersey.osgi").artifactId("jersey-server").versionAsInProject(),
+                mavenBundle().groupId("com.sun.jersey.osgi").artifactId("jsr311-api").versionAsInProject(),
+                mavenBundle().groupId("commons-io").artifactId("commons-io").versionAsInProject()),
                 vmOption("-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"),
                 waitForFrameworkStartup(),
                 compendiumProfile(),
@@ -103,7 +104,7 @@ public class ApplicationRegistrationTest {
                 return new HashSet<Class<?>>(asList(TestResource.class));
             }
         }, params);
-        Thread.sleep(100);
+        Thread.sleep(1000);
         final URL url = new URL("http://localhost:8080/foo/hello");
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.connect();
@@ -115,7 +116,7 @@ public class ApplicationRegistrationTest {
     @Test
     public void testApplicationRegistration() throws Exception {
         final ServiceRegistration registration = bundleContext.registerService(Application.class.getName(), _app, null);
-        Thread.sleep(100);
+        Thread.sleep(1000);
         final URL url = new URL("http://localhost:8080/test/hello");
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.connect();
@@ -135,7 +136,7 @@ public class ApplicationRegistrationTest {
                         registry.filter("/*").through(filter);
                     }
                 }, null);
-        Thread.sleep(100);
+        Thread.sleep(1000);
         final URL url = new URL("http://localhost:8080/test/hello");
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.connect();

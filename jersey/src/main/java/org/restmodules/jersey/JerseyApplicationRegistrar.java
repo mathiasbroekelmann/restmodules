@@ -22,7 +22,7 @@ import org.restmodules.ApplicationRegistrar;
  * @since 11.01.2010
  *
  */
-public class JerseyApplicationRegistrar extends AbstractApplicationRegistrar implements ApplicationRegistrar {
+public class JerseyApplicationRegistrar extends AbstractApplicationRegistrar {
 
     public JerseyApplicationRegistrar(final ApplicationProvider provider) {
         super(provider);

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
         <groupId>org.restmodules</groupId>
@@ -9,23 +8,23 @@
     </parent>
 
     <properties>
-        <bundle.symbolicName>org.restmodules</bundle.symbolicName>
-        <bundle.namespace>org.restmodules</bundle.namespace>
+        <bundle.symbolicName>org.restmodules.jersey</bundle.symbolicName>
+        <bundle.namespace>org.restmodules.jersey</bundle.namespace>
     </properties>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>restmodules-core</artifactId>
+    <groupId>org.restmodules</groupId>
+    <artifactId>restmodules-jersey</artifactId>
+    <version>1.0-SNAPSHOT</version>
 
-    <name>${bundle.symbolicName} [${bundle.namespace}]</name>
+    <name>${bundle.symbolicName}</name>
 
     <packaging>bundle</packaging>
 
-    <description>the main bundle of the restmodules services</description>
-
     <dependencies>
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
+            <groupId>org.restmodules</groupId>
+            <artifactId>restmodules-core</artifactId>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey.osgi</groupId>
@@ -40,16 +39,16 @@
             <artifactId>jsr311-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
         </dependency>
     </dependencies>
 
@@ -60,10 +59,10 @@
                 <artifactId>maven-pax-plugin</artifactId>
                 <version>1.4</version>
                 <!--
-                    | enable improved OSGi compilation support for the bundle life-cycle. | to
-                    switch back to the standard bundle life-cycle, move this setting | down to the
-                    maven-bundle-plugin section
-                -->
+           | enable improved OSGi compilation support for the bundle life-cycle.
+           | to switch back to the standard bundle life-cycle, move this setting
+           | down to the maven-bundle-plugin section
+          -->
                 <extensions>true</extensions>
             </plugin>
             <plugin>
@@ -71,26 +70,25 @@
                 <artifactId>maven-bundle-plugin</artifactId>
                 <version>2.0.1</version>
                 <!--
-                    | the following instructions build a simple set of public/private classes into
-                    an OSGi bundle
-                -->
+         | the following instructions build a simple set of public/private classes into an OSGi bundle
+        -->
                 <configuration>
                     <instructions>
                         <Bundle-SymbolicName>${bundle.symbolicName}</Bundle-SymbolicName>
                         <Bundle-Version>${pom.version}</Bundle-Version>
                         <!--
-                            | assume public classes are in the top package, and private classes are
-                            under ".internal"
-                        -->
+             | assume public classes are in the top package, and private classes are under ".internal"
+            -->
                         <Export-Package>!${bundle.namespace}.internal.*,${bundle.namespace}.*;version="${pom.version}"</Export-Package>
                         <Private-Package>${bundle.namespace}.internal.*</Private-Package>
                         <!--
-                            | each module can override these defaults in their osgi.bnd file
-                        -->
+             | each module can override these defaults in their osgi.bnd file
+            -->
                         <_include>-osgi.bnd</_include>
                     </instructions>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 </project>
