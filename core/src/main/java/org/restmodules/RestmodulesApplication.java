@@ -5,13 +5,14 @@
 
 package org.restmodules;
 
+import javax.servlet.Filter;
 import javax.ws.rs.core.Application;
+
 import org.osgi.service.http.HttpContext;
 import org.restmodules.filter.FilterRegistry;
 
 /**
- *
- * @author mathias
+ * @author Mathias Broekelmann
  */
 public abstract class RestmodulesApplication extends Application {
     /**
@@ -29,7 +30,7 @@ public abstract class RestmodulesApplication extends Application {
     }
 
     /**
-     * Callback template. overwrite this method to register any {@link Filter servlet filters} to apply to this
+     * Call back template. overwrite this method to register any {@link Filter servlet filters} to apply to this
      * application.
      */
     public void registerFilters(final FilterRegistry registry) {
