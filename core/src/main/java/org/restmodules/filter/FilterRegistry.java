@@ -4,6 +4,8 @@ import java.util.Map;
 
 import javax.servlet.Filter;
 
+import org.restmodules.ioc.Provider;
+
 /**
  * A FilterRegistry allows defining a set of servlet filters. Implementation is loosely inspired by google guice.
  *
@@ -49,7 +51,7 @@ public interface FilterRegistry {
 
         /**
          * define a filter without any init params.
-         * 
+         *
          * @param filter the filter type to define.
          */
         void through(final Class<Filter> filterClazz);
@@ -61,5 +63,20 @@ public interface FilterRegistry {
          * @param initParams the init parameters to apply to the {@link Filter#init(javax.servlet.FilterConfig)} method.
          */
         void through(final Class<Filter> filterClazz, final Map<String, String> initParams);
+
+        /**
+         * define a filter without any init params.
+         *
+         * @param provider a provider for the filter to define.
+         */
+        void through(final Provider<Filter> provider);
+
+        /**
+         * define a filter by supplying init parameters.
+         * 
+         * @param provider a provider for the filter to define.
+         * @param initParams the init parameters to apply to the {@link Filter#init(javax.servlet.FilterConfig)} method.
+         */
+        void through(final Provider<Filter> provider, final Map<String, String> initParams);
     }
 }

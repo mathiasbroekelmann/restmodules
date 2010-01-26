@@ -17,6 +17,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.restmodules.ioc.Provider;
+
 /**
  * @author Mathias Broekelmann
  *
@@ -26,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 public final class ServletFilterWrapper implements ServletFilter {
     private final Map<String, String> _initParams;
     private final Provider<Filter> _filter;
-    private transient Filter _filterInstance;
+    private volatile Filter _filterInstance;
     private final Iterable<PatternMatcher> _uriPatterns;
 
     public ServletFilterWrapper(final String urlPattern,

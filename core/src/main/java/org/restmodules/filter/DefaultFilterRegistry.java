@@ -14,8 +14,11 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.restmodules.ioc.Provider;
+
 /**
  * The DefaultFilterRegistry implements the dsl to register filter instances.
+ *
  * @author Mathias Broekelmann
  *
  * @since 13.01.2010
@@ -36,7 +39,7 @@ public class DefaultFilterRegistry implements FilterRegistry {
         return new FilterBuilder() {
 
             public void through(final javax.servlet.Filter filter) {
-                through(filter, Collections.<String, String>emptyMap());
+                through(filter, Collections.<String, String> emptyMap());
             }
 
             public void through(final Filter filter, final Map<String, String> initParams) {
@@ -55,7 +58,7 @@ public class DefaultFilterRegistry implements FilterRegistry {
             }
 
             public void through(final Class<Filter> filterClazz) {
-                through(filterClazz, Collections.<String, String>emptyMap());
+                through(filterClazz, Collections.<String, String> emptyMap());
             }
 
             public void through(final Class<Filter> filterClazz, final Map<String, String> initParams) {
@@ -66,8 +69,23 @@ public class DefaultFilterRegistry implements FilterRegistry {
                     throw new IllegalArgumentException("Init params must not be null");
                 }
                 _filters.add(new ServletFilterWrapper(urlPattern,
-                        initParams, createFilterProvider(filterClazz),
-                        moreUrlPatterns));
+                                                      initParams,
+                                                      createFilterProvider(filterClazz),
+                                                      moreUrlPatterns));
+            }
+
+            public void through(final Provider<Filter> provider) {
+                through(provider, Collections.<String, String> emptyMap());
+            }
+
+            public void through(final Provider<Filter> provider, final Map<String, String> initParams) {
+                if (provider == null) {
+                    throw new IllegalArgumentException("Filter provider must not be null");
+                }
+                if (initParams == null) {
+                    throw new IllegalArgumentException("Init params must not be null");
+                }
+                _filters.add(new ServletFilterWrapper(urlPattern, initParams, provider, moreUrlPatterns));
             }
         };
     }
@@ -88,7 +106,7 @@ public class DefaultFilterRegistry implements FilterRegistry {
             private ServletConfig _config;
 
             public void service(final ServletRequest request, final ServletResponse response) throws ServletException,
-                    IOException {
+                IOException {
                 new ServletFilterChainImplementation(servlet).doFilter(request, response);
             }
 
@@ -127,7 +145,7 @@ public class DefaultFilterRegistry implements FilterRegistry {
         }
 
         public void doFilter(final ServletRequest request, final ServletResponse response) throws IOException,
-                ServletException {
+            ServletException {
             if (_remainingFilters.hasNext()) {
                 _remainingFilters.next().doFilter(request, response, this);
             } else {
