@@ -55,25 +55,66 @@ public abstract class AbstractApplicationRegistrar implements ApplicationRegistr
             httpService.registerServlet(alias, servlet, initParams, context);
         } catch (final ServletException e) {
             throw new RuntimeException(format("Could not register servlet %s for application %s at alias %s",
-                                              servlet,
-                                              getApplication().toString(),
-                                              alias), e);
+                    servlet,
+                    getApplication().toString(),
+                    alias), e);
         } catch (final NamespaceException e) {
             throw new RuntimeException(format("Could not register servlet %s for application %s at alias %s",
-                                              servlet,
-                                              getApplication().toString(),
-                                              alias), e);
+                    servlet,
+                    getApplication().toString(),
+                    alias), e);
         }
-        return new Runnable() {
-            private volatile boolean _registered = true;
+        Callbacks callbacks = new Callbacks(httpService, alias);
+        registerUpdateCallback(callbacks.toUpdate());
+        return callbacks.toUnregister();
+    }
 
-            public synchronized void run() {
-                if (_registered) {
-                    httpService.unregister(alias);
-                    _registered = false;
+    private void registerUpdateCallback(Runnable toUpdate) {
+        Application app = getApplication();
+        if (app instanceof RestmodulesApplication) {
+            ((RestmodulesApplication) app).updateCallback(toUpdate);
+        }
+    }
+
+    private class Callbacks {
+
+        private final HttpService _httpService;
+        private final String _alias;
+
+        private volatile boolean _registered = true;
+        
+        Callbacks(HttpService httpService, String alias) {
+            _httpService = httpService;
+            _alias = alias;
+        }
+
+        Runnable toUnregister() {
+            return new Runnable() {
+
+                public void run() {
+                    synchronized (Callbacks.this) {
+                        if (_registered) {
+                            _httpService.unregister(_alias);
+                            _registered = false;
+                        }
+                    }
                 }
-            }
-        };
+            };
+        }
+
+        Runnable toUpdate() {
+            return new Runnable() {
+
+                public void run() {
+                    synchronized (Callbacks.this) {
+                        if (_registered) {
+                            _httpService.unregister(_alias);
+                            AbstractApplicationRegistrar.this.registerAt(_httpService);
+                        }
+                    }
+                }
+            };
+        }
     }
 
     protected DefaultFilterRegistry filterRegistry() {
@@ -115,20 +156,24 @@ public abstract class AbstractApplicationRegistrar implements ApplicationRegistr
      * Provide the alias to use for registering the servlet.
      */
     protected String alias() {
-        String basePath = null;
-        if (basePath == null) {
-            basePath = (String) getServiceReference().getProperty(ALIAS_SERVICE_PROPERTY);
+        final Application application = getApplication();
+        String alias = null;
+        if (application instanceof RestmodulesApplication) {
+            alias = ((RestmodulesApplication) application).getAlias();
         }
-        if (basePath == null) {
-            basePath = "/";
+        if (alias == null) {
+            alias = (String) getServiceReference().getProperty(ALIAS_SERVICE_PROPERTY);
         }
-        return basePath;
+        if (alias == null) {
+            alias = "/";
+        }
+        return alias;
     }
 
     protected Servlet filtered(Servlet servlet) {
         final Servlet filteredServlet;
         Application app = getApplication();
-        if(app instanceof RestmodulesApplication) {
+        if (app instanceof RestmodulesApplication) {
             RestmodulesApplication restModulesApp = (RestmodulesApplication) app;
             DefaultFilterRegistry registry = filterRegistry();
             restModulesApp.registerFilters(registry);
@@ -138,5 +183,4 @@ public abstract class AbstractApplicationRegistrar implements ApplicationRegistr
         }
         return filteredServlet;
     }
-
 }

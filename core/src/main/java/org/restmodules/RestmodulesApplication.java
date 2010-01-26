@@ -35,4 +35,11 @@ public abstract class RestmodulesApplication extends Application {
      */
     public void registerFilters(final FilterRegistry registry) {
     }
+
+    /**
+     * call back template to register an update function. Use the function to notify the container that the application
+     * has changed and needs to get updated.
+     */
+    public void updateCallback(final Runnable update) {
+    }
 }

@@ -86,17 +86,4 @@ public class JerseyApplicationRegistrar extends AbstractApplicationRegistrar {
         }
         return httpContext;
     }
-
-    @Override
-    protected String alias() {
-        final Application application = getApplication();
-        String alias = null;
-        if (application instanceof JerseyApplication) {
-            alias = ((JerseyApplication) application).getAlias();
-        }
-        if (alias == null) {
-            alias = super.alias();
-        }
-        return alias;
-    }
 }
