@@ -1,8 +1,8 @@
 package org.restmodules.internal;
 
-import java.util.ArrayList;
 import static java.util.Arrays.asList;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +16,6 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
-
 import org.restmodules.ApplicationProvider;
 import org.restmodules.ApplicationRegistrar;
 import org.restmodules.ApplicationRegistrarFactory;

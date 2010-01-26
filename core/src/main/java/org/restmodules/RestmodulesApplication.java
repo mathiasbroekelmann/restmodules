@@ -11,6 +11,8 @@ import javax.ws.rs.core.Application;
 import org.osgi.service.http.HttpContext;
 import org.restmodules.filter.FilterRegistrar;
 import org.restmodules.filter.FilterRegistry;
+import org.restmodules.ioc.Provider;
+import org.restmodules.ioc.Scoped;
 
 /**
  * @author Mathias Broekelmann
@@ -42,5 +44,19 @@ public abstract class RestmodulesApplication extends Application implements Filt
      * has changed and needs to get updated.
      */
     public void updateCallback(final Runnable update) {
+    }
+
+    /**
+     * Determine the provider which resolves instances of the given type. The default implementation always returns null
+     * which means that the container is responsible to create and manage the instance for the type.
+     * 
+     * The returned provider may implement {@link Scoped} to provide the scope of the instance to the container.
+     * 
+     * @param <T> the type of the value
+     * @param clazz the class type for the value
+     * @return the provider or null if no such provider is available.
+     */
+    public <T> Provider<T> getProvider(final Class<T> clazz) {
+        return null;
     }
 }

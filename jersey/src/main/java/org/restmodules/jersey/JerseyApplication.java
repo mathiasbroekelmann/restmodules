@@ -1,13 +1,8 @@
 package org.restmodules.jersey;
 
-import javax.servlet.Filter;
-import javax.ws.rs.core.Application;
-
-import org.osgi.service.http.HttpContext;
+import org.restmodules.RestmodulesApplication;
 
 import com.sun.jersey.core.spi.component.ioc.IoCComponentProviderFactory;
-import org.restmodules.RestmodulesApplication;
-import org.restmodules.filter.FilterRegistry;
 
 /**
  * @author Mathias Broekelmann
