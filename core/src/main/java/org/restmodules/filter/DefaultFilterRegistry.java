@@ -15,6 +15,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 /**
+ * The DefaultFilterRegistry implements the dsl to register filter instances.
  * @author Mathias Broekelmann
  *
  * @since 13.01.2010
