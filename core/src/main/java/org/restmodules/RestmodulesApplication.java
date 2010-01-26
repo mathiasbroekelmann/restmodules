@@ -9,12 +9,13 @@ import javax.servlet.Filter;
 import javax.ws.rs.core.Application;
 
 import org.osgi.service.http.HttpContext;
+import org.restmodules.filter.FilterRegistrar;
 import org.restmodules.filter.FilterRegistry;
 
 /**
  * @author Mathias Broekelmann
  */
-public abstract class RestmodulesApplication extends Application {
+public abstract class RestmodulesApplication extends Application implements FilterRegistrar {
     /**
      * Optionally provide the http base path for this application.
      */
