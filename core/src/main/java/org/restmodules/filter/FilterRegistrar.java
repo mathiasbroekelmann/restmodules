@@ -13,6 +13,8 @@ public interface FilterRegistrar {
 
     /**
      * Register servlet filter in the given filter registry.
+     * 
+     * @return a runnable which will unregister all filters.
      */
     void registerFilters(FilterRegistry registry);
 }

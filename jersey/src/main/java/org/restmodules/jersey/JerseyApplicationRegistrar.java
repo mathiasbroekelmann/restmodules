@@ -4,13 +4,13 @@ import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.ws.rs.core.Application;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.service.http.HttpContext;
 import org.restmodules.AbstractApplicationRegistrar;
 import org.restmodules.ApplicationProvider;
 import org.restmodules.ApplicationRegistrar;
 import org.restmodules.RestmodulesApplication;
 import org.restmodules.filter.DefaultFilterRegistry;
-import org.restmodules.filter.Provider;
 import org.restmodules.ioc.Proxied;
 import org.restmodules.ioc.Scope;
 import org.restmodules.ioc.Scoped;
@@ -24,6 +24,7 @@ import com.sun.jersey.core.spi.component.ioc.IoCInstantiatedComponentProvider;
 import com.sun.jersey.core.spi.component.ioc.IoCManagedComponentProvider;
 import com.sun.jersey.spi.container.WebApplication;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
+import org.restmodules.ioc.Provider;
 
 /**
  * Jersey specific implementation for an {@link ApplicationRegistrar}.
@@ -35,7 +36,7 @@ import com.sun.jersey.spi.container.servlet.ServletContainer;
  */
 public class JerseyApplicationRegistrar extends AbstractApplicationRegistrar {
 
-    public JerseyApplicationRegistrar(final ApplicationProvider provider) {
+    public JerseyApplicationRegistrar(final ApplicationProvider provider, final BundleContext bc) {
         super(provider);
     }
 

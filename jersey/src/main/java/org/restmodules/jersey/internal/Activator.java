@@ -16,7 +16,7 @@ public class Activator implements BundleActivator {
         bc.registerService(ApplicationRegistrarFactory.class.getName(), new ApplicationRegistrarFactory() {
 
             public ApplicationRegistrar create(final ApplicationProvider context) {
-                return new JerseyApplicationRegistrar(context);
+                return new JerseyApplicationRegistrar(context, bc);
             }
         }, null);
     }

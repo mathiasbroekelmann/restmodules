@@ -38,54 +38,61 @@ public class DefaultFilterRegistry implements FilterRegistry {
         }
         return new FilterBuilder() {
 
-            public void through(final javax.servlet.Filter filter) {
-                through(filter, Collections.<String, String> emptyMap());
+            public Runnable through(final javax.servlet.Filter filter) {
+                return through(filter, Collections.<String, String> emptyMap());
             }
 
-            public void through(final Filter filter, final Map<String, String> initParams) {
+            public Runnable through(final Filter filter, final Map<String, String> initParams) {
                 if (filter == null) {
                     throw new IllegalArgumentException("Filter must not be null");
                 }
-                if (initParams == null) {
-                    throw new IllegalArgumentException("Init params must not be null");
-                }
-                _filters.add(new ServletFilterWrapper(urlPattern, initParams, new Provider<Filter>() {
-
+                final Provider<Filter> provider = new Provider<Filter>() {
                     public Filter get() {
                         return filter;
                     }
-                }, moreUrlPatterns));
+                };
+                return through(provider, initParams);
             }
 
-            public void through(final Class<Filter> filterClazz) {
-                through(filterClazz, Collections.<String, String> emptyMap());
+            public Runnable through(final Class<Filter> filterClazz) {
+                return through(filterClazz, Collections.<String, String> emptyMap());
             }
 
-            public void through(final Class<Filter> filterClazz, final Map<String, String> initParams) {
+            public Runnable through(final Class<Filter> filterClazz, final Map<String, String> initParams) {
                 if (filterClazz == null) {
                     throw new IllegalArgumentException("Filter class must not be null");
                 }
-                if (initParams == null) {
-                    throw new IllegalArgumentException("Init params must not be null");
-                }
-                _filters.add(new ServletFilterWrapper(urlPattern,
-                                                      initParams,
-                                                      createFilterProvider(filterClazz),
-                                                      moreUrlPatterns));
+                final Provider<Filter> provider = createFilterProvider(filterClazz);
+                return through(provider, initParams);
             }
 
-            public void through(final Provider<Filter> provider) {
-                through(provider, Collections.<String, String> emptyMap());
+            public Runnable through(final Provider<Filter> provider) {
+                return through(provider, Collections.<String, String> emptyMap());
             }
 
-            public void through(final Provider<Filter> provider, final Map<String, String> initParams) {
+            public Runnable through(final Provider<Filter> provider, final Map<String, String> initParams) {
                 if (provider == null) {
                     throw new IllegalArgumentException("Filter provider must not be null");
                 }
                 if (initParams == null) {
                     throw new IllegalArgumentException("Init params must not be null");
                 }
-                _filters.add(new ServletFilterWrapper(urlPattern, initParams, provider, moreUrlPatterns));
+                final ServletFilter servletFilter = new ServletFilterWrapper(urlPattern,
+                                                                             initParams,
+                                                                             provider,
+                                                                             moreUrlPatterns);
+                _filters.add(servletFilter);
+                return new Runnable() {
+                    private volatile boolean _removed = false;
+
+                    public synchronized void run() {
+                        if (!_removed) {
+                            _removed = true;
+                            servletFilter.destroy();
+                            _filters.remove(servletFilter);
+                        }
+                    }
+                };
             }
         };
     }

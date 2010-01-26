@@ -38,45 +38,51 @@ public interface FilterRegistry {
          * define a filter without any init params.
          *
          * @param filter the filter instance to define.
+         * @return runnable that can be used to unregister the filter. Runnable#run may be called multiple times.
          */
-        void through(final Filter filter);
+        Runnable through(final Filter filter);
 
         /**
          * define a filter by supplying init parameters.
          *
          * @param filter the filter instance to define.
          * @param initParams the init parameters to apply to the {@link Filter#init(javax.servlet.FilterConfig)} method.
+         * @return runnable that can be used to unregister the filter. Runnable#run may be called multiple times.
          */
-        void through(final Filter filter, final Map<String, String> initParams);
+        Runnable through(final Filter filter, final Map<String, String> initParams);
 
         /**
          * define a filter without any init params.
          *
          * @param filter the filter type to define.
+         * @return runnable that can be used to unregister the filter. Runnable#run may be called multiple times.
          */
-        void through(final Class<Filter> filterClazz);
+        Runnable through(final Class<Filter> filterClazz);
 
         /**
          * define a filter by supplying init parameters.
          *
          * @param filter the filter type to define.
          * @param initParams the init parameters to apply to the {@link Filter#init(javax.servlet.FilterConfig)} method.
+         * @return runnable that can be used to unregister the filter. Runnable#run may be called multiple times.
          */
-        void through(final Class<Filter> filterClazz, final Map<String, String> initParams);
+        Runnable through(final Class<Filter> filterClazz, final Map<String, String> initParams);
 
         /**
          * define a filter without any init params.
          *
          * @param provider a provider for the filter to define.
+         * @return runnable that can be used to unregister the filter. Runnable#run may be called multiple times.
          */
-        void through(final Provider<Filter> provider);
+        Runnable through(final Provider<Filter> provider);
 
         /**
          * define a filter by supplying init parameters.
-         * 
+         *
          * @param provider a provider for the filter to define.
          * @param initParams the init parameters to apply to the {@link Filter#init(javax.servlet.FilterConfig)} method.
+         * @return runnable that can be used to unregister the filter. Runnable#run may be called multiple times.
          */
-        void through(final Provider<Filter> provider, final Map<String, String> initParams);
+        Runnable through(final Provider<Filter> provider, final Map<String, String> initParams);
     }
 }
