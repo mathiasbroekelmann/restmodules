@@ -73,7 +73,7 @@ public class JerseyApplicationRegistrar extends AbstractApplicationRegistrar {
             }
 
             public IoCComponentProvider getComponentProvider(final ComponentContext cc, final Class<?> c) {
-                return getComponentProvider(null, c);
+                return getComponentProvider(c);
             }
         };
     }
